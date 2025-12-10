@@ -1,0 +1,10 @@
+Ziel des Projekts ist die Entwicklung einer webbasierten Anwendung, die mithilfe von Machine Learning das individuelle Risiko für Typ-2-Diabetes einschätzt und dieses für Nutzer nachvollziehbar erklärt.
+Das Backend basiert auf Python (FastAPI) und verwendet erklärbare KI-Methoden (z. B. SHAP), um die wichtigsten Einflussfaktoren der Risikobewertung transparent darzustellen.
+Das Frontend wird mit React umgesetzt und visualisiert sowohl den berechneten Risikowert als auch interaktive Erklärungen 
+(eventuell in Form von Diagrammen und/oder „Was-wäre-wenn“-Analysen.)
+Neben der technischen Umsetzung liegt der Fokus auf der Verständlichkeit der KI-Erklärungen und der nutzerfreundlichen Präsentation medizinisch sensibler Informationen.
+
+Optional:
+(Abschließend soll eine kleine Nutzerevaluation Aufschluss darüber geben, wie verständlich und vertrauenswürdig die Erklärungen wahrgenommen werden.)
+
+XAI-DiabetesCheck
