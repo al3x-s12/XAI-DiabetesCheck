@@ -1,0 +1,170 @@
+{
+  "features": [
+    "HighBP",
+    "HighChol",
+    "BMI",
+    "Smoker",
+    "Stroke",
+    "HeartDiseaseorAttack",
+    "PhysActivity",
+    "Fruits",
+    "Veggies",
+    "HvyAlcoholConsump",
+    "GenHlth",
+    "MentHlth",
+    "PhysHlth",
+    "Age",
+    "Education",
+    "Income"
+  ],
+  "default_values": {
+    "HighBP": 0.0,
+    "HighChol": 0.0,
+    "BMI": 27.0,
+    "Smoker": 0.0,
+    "Stroke": 0.0,
+    "HeartDiseaseorAttack": 0.0,
+    "PhysActivity": 1.0,
+    "Fruits": 1.0,
+    "Veggies": 1.0,
+    "HvyAlcoholConsump": 0.0,
+    "GenHlth": 2.0,
+    "MentHlth": 0.0,
+    "PhysHlth": 0.0,
+    "Age": 8.0,
+    "Education": 5.0,
+    "Income": 7.0
+  },
+  "feature_info": {
+    "HighBP": "Bluthochdruck (0=Nein, 1=Ja)",
+    "HighChol": "Hoher Cholesterin (0=Nein, 1=Ja)",
+    "BMI": "Body Mass Index",
+    "Smoker": "Raucher (0=Nein, 1=Ja)",
+    "Stroke": "Schlaganfall in Vergangenheit (0=Nein, 1=Ja)",
+    "HeartDiseaseorAttack": "Herzerkrankung (0=Nein, 1=Ja)",
+    "PhysActivity": "Körperliche Aktivität (0=Nein, 1=Ja)",
+    "Fruits": "Obstkonsum (0=Nein, 1=Ja)",
+    "Veggies": "Gemüsekonsum (0=Nein, 1=Ja)",
+    "HvyAlcoholConsump": "Starker Alkoholkonsum (0=Nein, 1=Ja)",
+    "GenHlth": "Allgemeine Gesundheit (1=Exzellent, 5=Schlecht)",
+    "MentHlth": "Psychische Gesundheitstage (0-30 Tage)",
+    "PhysHlth": "Körperliche Gesundheitstage (0-30 Tage)",
+    "Age": "Altersgruppe (1=18-24, 13=80+)",
+    "Education": "Bildungsstand (1=Kein Abschluss, 6=College)",
+    "Income": "Einkommen (1=<10k$, 8=>75k$)"
+  },
+  "feature_ranges": {
+    "HighBP": {
+      "min": 0.0,
+      "max": 1.0,
+      "median": 0.0,
+      "mean": 0.4290011037527594,
+      "std": 0.4949344626899013
+    },
+    "HighChol": {
+      "min": 0.0,
+      "max": 1.0,
+      "median": 0.0,
+      "mean": 0.4241209397666351,
+      "std": 0.49420980465688485
+    },
+    "BMI": {
+      "min": 12.0,
+      "max": 98.0,
+      "median": 27.0,
+      "mean": 28.382363607694735,
+      "std": 6.608694201406008
+    },
+    "Smoker": {
+      "min": 0.0,
+      "max": 1.0,
+      "median": 0.0,
+      "mean": 0.44316855881425415,
+      "std": 0.49676066677856323
+    },
+    "Stroke": {
+      "min": 0.0,
+      "max": 1.0,
+      "median": 0.0,
+      "mean": 0.04057079785556607,
+      "std": 0.19729409940016232
+    },
+    "HeartDiseaseorAttack": {
+      "min": 0.0,
+      "max": 1.0,
+      "median": 0.0,
+      "mean": 0.09418558814254178,
+      "std": 0.29208731475075544
+    },
+    "PhysActivity": {
+      "min": 0.0,
+      "max": 1.0,
+      "median": 1.0,
+      "mean": 0.7565436770734784,
+      "std": 0.42916904339704554
+    },
+    "Fruits": {
+      "min": 0.0,
+      "max": 1.0,
+      "median": 1.0,
+      "mean": 0.6342557552822453,
+      "std": 0.48163918717043347
+    },
+    "Veggies": {
+      "min": 0.0,
+      "max": 1.0,
+      "median": 1.0,
+      "mean": 0.811419899085462,
+      "std": 0.3911754716844908
+    },
+    "HvyAlcoholConsump": {
+      "min": 0.0,
+      "max": 1.0,
+      "median": 0.0,
+      "mean": 0.05619678334910123,
+      "std": 0.2303017888952292
+    },
+    "GenHlth": {
+      "min": 1.0,
+      "max": 5.0,
+      "median": 2.0,
+      "mean": 2.5113923052664773,
+      "std": 1.0684773622803934
+    },
+    "MentHlth": {
+      "min": 0.0,
+      "max": 30.0,
+      "median": 0.0,
+      "mean": 3.1847721538946705,
+      "std": 7.412846696196173
+    },
+    "PhysHlth": {
+      "min": 0.0,
+      "max": 30.0,
+      "median": 0.0,
+      "mean": 4.2420805739514345,
+      "std": 8.717951307175127
+    },
+    "Age": {
+      "min": 1.0,
+      "max": 13.0,
+      "median": 8.0,
+      "mean": 8.032119205298013,
+      "std": 3.0542204341684838
+    },
+    "Education": {
+      "min": 1.0,
+      "max": 6.0,
+      "median": 5.0,
+      "mean": 5.050433617155472,
+      "std": 0.9857741757276509
+    },
+    "Income": {
+      "min": 1.0,
+      "max": 8.0,
+      "median": 7.0,
+      "mean": 6.053874960580258,
+      "std": 2.0711475662715184
+    }
+  }
+}
