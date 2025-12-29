@@ -1,0 +1,120 @@
+# Projekt: XAI-DiabetesCheck
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ML Model files (große Dateien nicht versionieren)
+ml/model/*.pkl
+ml/model/*.joblib
+!ml/model/selected_features.json
+!ml/model/frontend_config.json
+!ml/model/selected_features.json
+
+# Daten (nicht versionieren - zu groß)
+data/
+*.csv
+*.h5
+*.hdf5
+*.npz
+*.npy
+
+# Logs
+*.log
+logs/
+
+# Frontend (React)
+frontend/node_modules/
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# Backend (Flask)
+backend/instance/
+backend/.webassets-cache
+
+# Docker
+*.dockerignore
+docker-compose.override.yml
+
+# Sonstiges
+temp/
+tmp/
+*.tmp
+*.temp
+.cache/
+.project

@@ -1,6 +1,6 @@
 # Anforderungen
-* Datensatz (Pima Indians, NHANES, synthetische Daten)
-* Features (Alter, BMI, Blutzucker, Familienanamnese)
+* Datensatz: "Diabetes Health Indicators Dataset" (CDC BRFSS, Kaggle)
+* Features (Alter, BMI, Allgemeine Gesundheit (1-5), Bluthochdruck, Hoher Cholesterin, Körperliche Aktivität, Raucher, Obstkonsum, Gemüsekonsum, Starker Alkoholkonsum, Körperliche Gesundheitstage, Psychische Gesundheitstage, Geschlecht, Bildungsstand, Einkommen)
 
 # Architektur
 * Frontend (React)
@@ -31,7 +31,7 @@ projekt/
 * Prüfen, ob die Erklärungen sinnvoll sind
 
 # Phase 3
-## Einfach API bauen
+## Einfache API bauen
 * Endpoint /predict mit POST (empfängt JSON mit Features)
 * Modell laden und Vorhersage + SHAP-Werte zurückgeben
 

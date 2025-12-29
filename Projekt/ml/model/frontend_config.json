@@ -1,0 +1,138 @@
+{
+  "features": [
+    "HighBP",
+    "HighChol",
+    "BMI",
+    "Smoker",
+    "Stroke",
+    "HeartDiseaseorAttack",
+    "PhysActivity",
+    "Fruits",
+    "Veggies",
+    "HvyAlcoholConsump",
+    "GenHlth",
+    "MentHlth",
+    "PhysHlth",
+    "Age",
+    "Education",
+    "Income"
+  ],
+  "default_values": {
+    "HighBP": 0.0,
+    "HighChol": 0.0,
+    "BMI": 27.0,
+    "Smoker": 0.0,
+    "Stroke": 0.0,
+    "HeartDiseaseorAttack": 0.0,
+    "PhysActivity": 1.0,
+    "Fruits": 1.0,
+    "Veggies": 1.0,
+    "HvyAlcoholConsump": 0.0,
+    "GenHlth": 2.0,
+    "MentHlth": 0.0,
+    "PhysHlth": 0.0,
+    "Age": 8.0,
+    "Education": 5.0,
+    "Income": 7.0
+  },
+  "feature_info": {
+    "HighBP": "Bluthochdruck (0=Nein, 1=Ja)",
+    "HighChol": "Hoher Cholesterin (0=Nein, 1=Ja)",
+    "BMI": "Body Mass Index",
+    "Smoker": "Raucher (0=Nein, 1=Ja)",
+    "Stroke": "Schlaganfall in Vergangenheit (0=Nein, 1=Ja)",
+    "HeartDiseaseorAttack": "Herzerkrankung (0=Nein, 1=Ja)",
+    "PhysActivity": "Körperliche Aktivität (0=Nein, 1=Ja)",
+    "Fruits": "Obstkonsum (0=Nein, 1=Ja)",
+    "Veggies": "Gemüsekonsum (0=Nein, 1=Ja)",
+    "HvyAlcoholConsump": "Starker Alkoholkonsum (0=Nein, 1=Ja)",
+    "GenHlth": "Allgemeine Gesundheit (1=Exzellent, 5=Schlecht)",
+    "MentHlth": "Psychische Gesundheitstage (0-30 Tage)",
+    "PhysHlth": "Körperliche Gesundheitstage (0-30 Tage)",
+    "Age": "Altersgruppe (1=18-24, 13=80+)",
+    "Education": "Bildungsstand (1=Kein Abschluss, 6=College)",
+    "Income": "Einkommen (1=<10k$, 8=>75k$)"
+  },
+  "feature_ranges": {
+    "HighBP": {
+      "min": 0.0,
+      "max": 1.0,
+      "median": 0.0
+    },
+    "HighChol": {
+      "min": 0.0,
+      "max": 1.0,
+      "median": 0.0
+    },
+    "BMI": {
+      "min": 12.0,
+      "max": 98.0,
+      "median": 27.0
+    },
+    "Smoker": {
+      "min": 0.0,
+      "max": 1.0,
+      "median": 0.0
+    },
+    "Stroke": {
+      "min": 0.0,
+      "max": 1.0,
+      "median": 0.0
+    },
+    "HeartDiseaseorAttack": {
+      "min": 0.0,
+      "max": 1.0,
+      "median": 0.0
+    },
+    "PhysActivity": {
+      "min": 0.0,
+      "max": 1.0,
+      "median": 1.0
+    },
+    "Fruits": {
+      "min": 0.0,
+      "max": 1.0,
+      "median": 1.0
+    },
+    "Veggies": {
+      "min": 0.0,
+      "max": 1.0,
+      "median": 1.0
+    },
+    "HvyAlcoholConsump": {
+      "min": 0.0,
+      "max": 1.0,
+      "median": 0.0
+    },
+    "GenHlth": {
+      "min": 1.0,
+      "max": 5.0,
+      "median": 2.0
+    },
+    "MentHlth": {
+      "min": 0.0,
+      "max": 30.0,
+      "median": 0.0
+    },
+    "PhysHlth": {
+      "min": 0.0,
+      "max": 30.0,
+      "median": 0.0
+    },
+    "Age": {
+      "min": 1.0,
+      "max": 13.0,
+      "median": 8.0
+    },
+    "Education": {
+      "min": 1.0,
+      "max": 6.0,
+      "median": 5.0
+    },
+    "Income": {
+      "min": 1.0,
+      "max": 8.0,
+      "median": 7.0
+    }
+  }
+}
