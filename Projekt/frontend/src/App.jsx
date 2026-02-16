@@ -155,14 +155,14 @@ function App(){
               <h3 className="text-xl font-bold text-gray-800 mb-4">Über diese Analyse</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h4 className="font-semibold text-gray-700 mb-2">🤖 KI-Modell</h4>
+                  <h4 className="font-semibold text-gray-700 mb-2">KI-Modell</h4>
                   <p className="text-gray-600">
                     Verwendet Random Forest mit SHAP für erklärbare KI. 
                     Trainiert auf CDC-Daten mit 250.000+ Einträgen.
                   </p>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-700 mb-2">📊 SHAP-Erklärungen</h4>
+                  <h4 className="font-semibold text-gray-700 mb-2">SHAP-Erklärungen</h4>
                   <p className="text-gray-600">
                     SHAP (SHapley Additive exPlanations) zeigt, welche Faktoren 
                     wie stark zur Risikobewertung beitragen.

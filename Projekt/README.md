@@ -1,56 +1,93 @@
-# Anforderungen
-* Datensatz: "Diabetes Health Indicators Dataset" (CDC BRFSS, Kaggle)
-* Features (Alter, BMI, Allgemeine Gesundheit (1-5), Bluthochdruck, Hoher Cholesterin, Körperliche Aktivität, Raucher, Obstkonsum, Gemüsekonsum, Starker Alkoholkonsum, Körperliche Gesundheitstage, Psychische Gesundheitstage, Geschlecht, Bildungsstand, Einkommen)
+# Phase 1 (Projektplanung)
+## Datenquelle
+* Datensatz: "Diabetes Health Indicators Dataset" (BRFSS2015)  
+Quelle: http://kaggle.com/datasets/alexteboul/diabetes-health-indicators-dataset
 
-# Architektur
+## Features 
+* Alter
+* BMI 
+* Allgemeine Gesundheit (1-5)
+* Bluthochdruck
+* Hoher Cholesterin
+* Körperliche Aktivität
+* Raucher
+* Obstkonsum
+* Gemüsekonsum
+* Starker Alkoholkonsum
+* Körperliche Gesundheitstage
+* Psychische Gesundheitstage
+* Geschlecht
+* Bildungsstand
+* Einkommen
+
+## Architektur
 * Frontend (React)
-* Backend (Flask oder FastAPI)
-* ML-Modell: Scikit-learn (z. B. Random Forest, XGBoost) + SHAP für Erklärungen
-* Kommunikation: REST-API zwischen Frontend und Backend
+* Backend (Flask Webframework) 
+* ML-Modell: Scikit-learn (z. B. Random Forest, XGBoost) 
+* Explainable: SHAP (Shapley-Wert) für Erklärungen/Auswertungen
+* Kommunikation: FAST-API zwischen Frontend und Backend
 
-# Projektstruktur
+## Projektstruktur
 ```
 projekt/
-├── frontend/          # React-App
-├── backend/           # Flask/FastAPI
-├── ml/                # Modelltraining, SHAP-Logik
+├── frontend/          # React
+├── backend/           # Flask/FAST-API
+├── ml/                # Modelltraining Ergebnisse
 ├── dokumentation/
+├── data/              # Diabetes-Daten
+├── notebooks/         # Python 
 └── README.md
 ```
-# Phase 2
+
+# Phase 2 (Daten & ML-Modell)
 ## Daten & ML-Modell
-* z.B. Kaggle "Diabetes Health Indicators"
-* Daten bereinigen, Features auswählen
+* Kaggle "Diabetes Health Indicators"
 
-## Basismodell trainieren
-* Einfaches Modell (Logistic Regression oder Random Forest) erstellen
-* Metriken prüfen (Accuracy, Precision, Recall, AUC)
+## Training
+### Explorative Datenanalyse (EDA)  
+* Auswahl der wichtisten Features  
+* Pandas & Numpy für die Verarbeitung 
+* Matplotlib & Seaborn: Um Grafiken und Diagramme zu erstellen.
+* Datensatz hat ungefähr 253.000 Einträge
+* Bildung von Gruppen (Abhängigkeiten)
+* Ergebnis: selected_features.json
 
-## SHAP-Integration testen
-* SHAP-Werte für Beispielvorhersagen berechnen
-* Prüfen, ob die Erklärungen sinnvoll sind
+### Model Training
+* Scikit-learn für die KI-Logik
+* joblib zum Speichern des Modells
+* Train-Test (80:20)
+* Random Forest (balanced) da nur 14% Erkrankt sind
+* Recall (0.762) Das Modell erkennt ca. 76 % der tatsächlichen Diabetiker korrekt.
+* Top 3 (GenHlth, HighBP, BMI)
+* Ergebnis: random forest (pkl)
 
-# Phase 3
-## Einfache API bauen
-* Endpoint /predict mit POST (empfängt JSON mit Features)
-* Modell laden und Vorhersage + SHAP-Werte zurückgeben
+### SHAP-Analyse
+* Wie viel trägt jeder Wert bei ?
+* Nur für Teilmenge, da sehr Rechenintensiv
+* Ergebnis: Balkendiagramm, shap_explainer.pkl
+
+### Modell exportieren
+* Feature-Beschreibungen (z.B. GenHlth)
+* Features ins Verhältnis setzen
+* Ergebnis: frontend_json.config
+
+# Phase 3 (Backend-Entwicklung)
+## API bauen
+* Kommunikation zwischen Fronted und Backend (FAST-API)
 
 ## Testen
 * Sicherstellen, dass Daten korrekt verarbeitet werden
 
-# Phase 4
+# Phase 4 (Frontend-Entwicklung)
 ## React-App
 * Formular mit Eingabefeldern für alle Features
-* Submit-Button, der Daten an Backend sendet
+* Button, der Daten an Backend sendet
 
 ## Ergebnisanzeige
 * Risiko in Prozent anzeigen
 * SHAP-Werte als Liste darstellen
 
-## Verbindung zum Backend
-* Fetch oder Axios nutzen
-
-# Phase 5
+# Phase 5 (Explainability-Visualisierung)
 ## Visuelle SHAP-Darstellung
 * Mit Chart.js, Plotly oder Recharts Balkendiagramm für Top-Features
 
@@ -58,18 +95,24 @@ projekt/
 * Slider für Features, die bei Änderung neue Vorhersage auslösen
 
 ## Responsive Design
-* CSS-Framework (Tailwind, Bootstrap) oder Media Queries
+* CSS-Frameworks (Tailwind, Bootstrap) oder Media Queries
 
 ## Evaluation vorbereiten
 * Usability-Test-Fragebogen entwerfen (5–10 Personen)
 
-# Phase 6
+# Phase 6 (Evaluation & Tests)
 ## Usability-Test durchführen
 
-## Feinschliff & Bugfixes
+## Bugfixes
 
+# Phase 7 (Dokumentation)
 ## Dokumentation schreiben
 * Architekturbeschreibung
 * Entscheidungen begründen
 * Testergebnisse zusammenfassen
 * Reflexion: Was lief gut, was nicht?
+
+## Fragen
+* Jede API genau in der Doku beschreiben?
+* Wie genau muss der Explainable Teil erklären?
+* Anforderungen? (Grafiken für Benutzer)

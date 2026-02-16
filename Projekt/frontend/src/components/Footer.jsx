@@ -12,31 +12,14 @@ const Footer = () => {
               Ein Projekt zur erklärbaren KI in der Diabetes-Risikobewertung
             </p>
           </div>
-          
-          <div className="flex space-x-4">
-            <a 
-              href="#" 
-              className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors"
-            >
-              <FaInfoCircle />
-              <span>Impressum</span>
-            </a>
-            <a 
-              href="#" 
-              className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors"
-            >
-              <FaGithub />
-              <span>GitHub</span>
-            </a>
-          </div>
         </div>
         
         <div className="mt-6 pt-6 border-t border-gray-700 text-center text-gray-400 text-sm">
           <p>
-            ⚕️ Dieses Tool dient nur zu Forschungs- und Informationszwecken. 
+            Dieses Tool dient nur zu Forschungs- und Informationszwecken. 
             Kein Ersatz für medizinische Beratung.
           </p>
-          <p className="mt-1">© 2026 XAI-DiabetesCheck Projekt | 10CP Projektarbeit</p>
+          <p className="mt-1">© 2026 XAI-DiabetesCheck Projekt</p>
         </div>
       </div>
     </footer>

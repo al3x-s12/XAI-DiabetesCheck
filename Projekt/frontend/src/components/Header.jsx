@@ -7,10 +7,6 @@ const Header = () => {
       <div className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-2">
-              <FaHeartbeat className="text-3xl text-red-300" />
-              <FaBrain className="text-2xl text-blue-300" />
-            </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-bold">XAI-DiabetesCheck</h1>
               <p className="text-blue-100 text-sm md:text-base">
