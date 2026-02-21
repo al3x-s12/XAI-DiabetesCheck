@@ -2,108 +2,200 @@ import React from 'react';
 import { getRiskCategory } from '../utils/formatters';
 import { FaChartLine, FaInfoCircle, FaArrowUp, FaArrowDown } from 'react-icons/fa';
 
-const ResultDisplay = ({ result, shapValues }) => {
+const ResultDisplay = ({ result }) => {
   if (!result) return null;
 
-  const { risk_percent, risk_category, message } = result.prediction || {};
-  const riskInfo = getRiskCategory(risk_percent);
-  const topPositive = result.explanations?.top_positive || [];
-  const topNegative = result.explanations?.top_negative || [];
+  const { risk_percent, risk_category, message, explanations } = result;
+  const categoryInfo = getRiskCategory(risk_percent);
+  const topPositive = explanations?.top_positive || [];
+  const topNegative = explanations?.top_negative || [];
+
+  const formatValue = (val) => (typeof val === 'number' ? val.toFixed(0) : val);
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Ergebnis</h2>
-        <div className="flex items-center space-x-2">
-          <FaChartLine className="text-blue-500" />
-          <span className="text-sm font-medium text-gray-600">AI-Analyse</span>
+    <div
+      style={{
+        backgroundColor: '#ffffff',
+        borderRadius: '12px',
+        boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)',
+        padding: '24px',
+        borderTop: '4px solid #22c55e', // green-500
+      }}
+    >
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+        <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937' }}>Ergebnis der Analyse</h2>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            backgroundColor: '#f3f4f6', // gray-100
+            padding: '4px 12px',
+            borderRadius: '9999px',
+          }}
+        >
+          <FaChartLine style={{ color: '#3b82f6' }} />
+          <span style={{ fontSize: '14px', fontWeight: '500', color: '#4b5563' }}>KI-Modell v1.0</span>
         </div>
       </div>
 
-      {/* Risiko-Anzeige */}
-      <div className="mb-8">
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
-          <div>
-            <h3 className="text-lg font-semibold text-gray-700">Ihr Diabetes-Risiko</h3>
-            <p className="text-gray-600">{message}</p>
-          </div>
-          <div className={`mt-2 md:mt-0 px-4 py-2 rounded-full ${riskInfo.bg} ${riskInfo.color} font-bold`}>
-            {riskInfo.text}
-          </div>
-        </div>
+      {/* Hauptbereich: 2 Spalten (auf kleinen Bildschirmen 1 Spalte) */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '32px',
+        }}
+      >
+        {/* Linke Spalte: Risiko-Meter */}
+        <div
+          style={{
+            padding: '24px',
+            borderRadius: '12px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            backgroundColor: categoryInfo.bgColor,   // z.B. '#f0fdf4' für grün
+          }}
+        >
+          <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#374151', marginBottom: '8px' }}>
+            Geschätztes Diabetes-Risiko
+          </h3>
 
-        {/* Progress Bar */}
-        <div className="mb-4">
-          <div className="flex justify-between text-sm text-gray-600 mb-1">
-            <span>Niedrig</span>
-            <span>Hoch</span>
-          </div>
-          <div className="h-6 bg-gradient-to-r from-green-400 via-yellow-400 to-red-500 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-white border-2 border-gray-800 relative"
-              style={{ width: `${Math.min(risk_percent, 100)}%` }}
-            >
-              <div className="absolute right-0 top-full mt-1 text-sm font-bold">
+          <div
+            style={{
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '160px',
+              height: '160px',
+              margin: '16px 0',
+            }}
+          >
+            {/* SVG-Kreis (Hintergrund + Fortschritt) */}
+            <svg style={{ width: '100%', height: '100%' }} viewBox="0 0 36 36">
+              {/* grauer Hintergrundkreis */}
+              <path
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none"
+                stroke="#e5e7eb"
+                strokeWidth="3"
+              />
+              {/* farbiger Fortschrittsbogen */}
+              <path
+                strokeDasharray={`${risk_percent}, 100`}
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none"
+                stroke={categoryInfo.strokeColor}   // Hex-Farbe, z.B. '#16a34a'
+                strokeWidth="3"
+                strokeLinecap="round"
+              />
+            </svg>
+
+            {/* Prozentangabe in der Mitte */}
+            <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <span style={{ fontSize: '36px', fontWeight: 'bold', color: categoryInfo.color }}>
                 {risk_percent}%
-              </div>
+              </span>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Erklärungen */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Positive Einflüsse */}
-        <div className="bg-red-50 p-4 rounded-lg">
-          <div className="flex items-center mb-3">
-            <FaArrowUp className="text-red-500 mr-2" />
-            <h4 className="font-semibold text-red-700">Erhöht das Risiko</h4>
+          {/* Kategorie-Badge */}
+          <div
+            style={{
+              padding: '4px 16px',
+              borderRadius: '9999px',
+              fontSize: '14px',
+              fontWeight: 'bold',
+              backgroundColor: '#ffffff',
+              boxShadow: '0 1px 2px 0 rgba(0,0,0,0.05)',
+              color: categoryInfo.color,
+            }}
+          >
+            Kategorie: {risk_category}
           </div>
-          {topPositive.length > 0 ? (
-            <ul className="space-y-2">
-              {topPositive.map((item, index) => (
-                <li key={index} className="flex justify-between items-center">
-                  <span className="text-gray-700">{item.feature}</span>
-                  <span className="font-bold text-red-600">+{item.impact.toFixed(4)}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-600 text-sm">Keine starken Risikofaktoren identifiziert</p>
-          )}
         </div>
 
-        {/* Negative Einflüsse */}
-        <div className="bg-green-50 p-4 rounded-lg">
-          <div className="flex items-center mb-3">
-            <FaArrowDown className="text-green-500 mr-2" />
-            <h4 className="font-semibold text-green-700">Senkt das Risiko</h4>
+        {/* Rechte Spalte: Faktoren */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {/* Risikotreiber */}
+          <div
+            style={{
+              backgroundColor: '#fef2f2', // red-50
+              padding: '16px',
+              borderRadius: '8px',
+              border: '1px solid #fee2e2', // red-100
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+              <FaArrowUp style={{ color: '#ef4444', marginRight: '8px' }} />
+              <h4 style={{ fontWeight: '600', color: '#b91c1c' }}>Haupt-Risikofaktoren</h4>
+            </div>
+            {topPositive.length > 0 ? (
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                {topPositive.map((item, index) => (
+                  <li
+                    key={index}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      fontSize: '14px',
+                      marginBottom: '4px',
+                    }}
+                  >
+                    <span style={{ color: '#374151' }}>{item.label || item.feature}</span>
+                    <span style={{ fontWeight: 'bold', color: '#dc2626' }}>{formatValue(item.value)}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p style={{ color: '#6b7280', fontSize: '14px', fontStyle: 'italic' }}>
+                Keine signifikanten Risikofaktoren gefunden.
+              </p>
+            )}
           </div>
-          {topNegative.length > 0 ? (
-            <ul className="space-y-2">
-              {topNegative.map((item, index) => (
-                <li key={index} className="flex justify-between items-center">
-                  <span className="text-gray-700">{item.feature}</span>
-                  <span className="font-bold text-green-600">{item.impact.toFixed(4)}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-600 text-sm">Keine starken Schutzfaktoren identifiziert</p>
-          )}
-        </div>
-      </div>
 
-      {/* Disclaimer */}
-      <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
-        <div className="flex items-start">
-          <FaInfoCircle className="text-blue-500 mr-3 mt-1 flex-shrink-0" />
-          <div>
-            <p className="text-sm text-blue-800">
-              <strong>Hinweis:</strong> Diese Analyse basiert auf einem KI-Modell und statistischen Daten. 
-              Sie dient nur zu Informationszwecken und ersetzt keine ärztliche Diagnose. 
-              Bei gesundheitlichen Bedenken konsultieren Sie bitte medizinisches Fachpersonal.
-            </p>
+          {/* Schutzfaktoren */}
+          <div
+            style={{
+              backgroundColor: '#f0fdf4', // green-50
+              padding: '16px',
+              borderRadius: '8px',
+              border: '1px solid #dcfce7', // green-100
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+              <FaArrowDown style={{ color: '#22c55e', marginRight: '8px' }} />
+              <h4 style={{ fontWeight: '600', color: '#15803d' }}>Schützende Faktoren</h4>
+            </div>
+            {topNegative.length > 0 ? (
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                {topNegative.map((item, index) => (
+                  <li
+                    key={index}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      fontSize: '14px',
+                      marginBottom: '4px',
+                    }}
+                  >
+                    <span style={{ color: '#374151' }}>{item.label || item.feature}</span>
+                    <span style={{ fontWeight: 'bold', color: '#16a34a' }}>{formatValue(item.value)}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p style={{ color: '#6b7280', fontSize: '14px', fontStyle: 'italic' }}>
+                Keine starken Schutzfaktoren identifiziert.
+              </p>
+            )}
           </div>
         </div>
       </div>

@@ -12,64 +12,41 @@ warnings.filterwarnings('ignore', category=UserWarning)
 class DiabetesModell:
     """Lädt das ML-Modell und stellt Vorhersage-Funktionen bereit"""
     
-    def __init__(self, model_path: str = None):
+    def __init__(self, model_dir: str = None):
         """
         Lädt das trainierte Modell und die Pipeline
         """
         try:
             # Standardpfad: Relativ zu dieser Datei
-            if model_path is None:
+            if model_dir is None:
                 current_dir = os.path.dirname(os.path.abspath(__file__))  # backend/
                 project_root = os.path.dirname(current_dir)  # Projekt/
-                model_path = os.path.join(project_root, "ml", "model", "final_pipeline.joblib")
+                model_dir = os.path.join(project_root, "ml", "model")
             
-            print(f"Loading model from: {model_path}")
+            # Pfade definieren
+            pipeline_path = os.path.join(model_dir, "final_model_pipeline.joblib")
+            explainer_path = os.path.join(model_dir, "shap_explainer.pkl")
+            config_path = os.path.join(model_dir, "frontend_config.json")
             
-            if not os.path.exists(model_path):
-                raise FileNotFoundError(f"Model file not found: {model_path}")
-            
-            # Pipeline laden (ohne predict_function, die wir neu implementieren)
-            pipeline_data = joblib.load(model_path)
-            print("Model loaded successfully")
-            
+            print(f"Lade Modell-Komponenten aus: {model_dir}")
+
             # Komponenten extrahieren
-            self.pipeline = joblib.load(model_path)
-            self.model = self.pipeline['model']
-            self.explainer = self.pipeline['explainer']
-            self.features = self.pipeline['features']
-            self.feature_info = self.pipeline.get('feature_descriptions', {})
-            self.feature_ranges = self.pipeline.get('feature_ranges', {})
+            self.pipeline = joblib.load(pipeline_path)
+            self.explainer = joblib.load(explainer_path)
             
-            print(f"✓ Model: {type(self.model).__name__}")
-            print(f"✓ Features: {len(self.features)}")
-            
-        except Exception as e:
-            print(f"Error loading model: {e}")
-            print("Current working directory:", os.getcwd())
-            raise
-        
-    def get_feature_info(self) -> Dict:
-        """Gibt Informationen zu allen Features zurück"""
-        try:
-            # Verwende direkte Attribute-Zugriffe mit Fallbacks
-            features = self.features if hasattr(self, 'features') else []
-            feature_info = self.feature_info if hasattr(self, 'feature_info') else {}
-            feature_ranges = self.feature_ranges if hasattr(self, 'feature_ranges') else {}
-            
-            return {
-                'features': features,
-                'feature_info': feature_info,
-                'feature_ranges': feature_ranges
-            }
-        except Exception as e:
-            print(f"Error in get_feature_info: {e}")
-            # Fallback auf leere Strukturen
-            return {
-                'features': [],
-                'feature_info': {},
-                'feature_ranges': {}
-            }
+            # Frontend Config laden
+            with open(config_path, 'r', encoding='utf-8') as f:
+                self.config = json.load(f)
+
+            self.features = self.config['features']
+            self.feature_info = self.config['feature_info']
+
+            print("Backend erfolgreich auf Pipeline-Modus umgestellt.")
     
+        except Exception as e:
+            print(f"Initialisierungsfehler: {e}")
+            raise e
+
     def _prepare_features(self, input_features: Dict[str, float]) -> pd.DataFrame:
         """Bereitet Features für das Modell vor"""
         features_list = []
@@ -156,25 +133,50 @@ class DiabetesModell:
             }
 
     def predict(self, input_data: Dict[str, float]) -> Dict[str, Any]:
-        """API-kompatible Predict-Funktion"""
-        result = self.predict_diabetes_risk(input_data)
+        """Berechnet Risiko und SHAP-Einflussfaktoren"""
+        # DataFrame in korrekter Reihenfolge erstellen
+        ordered_data = [input_data.get(f, self.feature_info[f]['default']) for f in self.features]
+        df_input = pd.DataFrame([ordered_data], columns=self.features)
         
-        if not result['success']:
-            return {
-                'success': False,
-                'error': result.get('error', 'Prediction failed'),
-                'risk_percent': None,
-                'shap_values': {}
-            }
+        # 1. Risiko-Wahrscheinlichkeit (Pipeline skaliert automatisch)
+        risk_proba = self.pipeline.predict_proba(df_input)[0][1]
+        
+        # 2. SHAP Werte berechnen
+        # Wir müssen die Daten für den Explainer manuell durch den Scaler der Pipeline schicken
+        scaler = self.pipeline.named_steps['scaler']
+        rf_model = self.pipeline.named_steps['clf']
+        
+        input_scaled = scaler.transform(df_input)
+        shap_values = self.explainer.shap_values(input_scaled)
+        
+        # SHAP-Werte für Klasse 1 (Diabetes) extrahieren
+        if isinstance(shap_values, list):
+            shap_vals_class1 = shap_values[1][0]
+        elif len(shap_values.shape) == 3:
+            shap_vals_class1 = shap_values[0, :, 1]
+        else:
+            shap_vals_class1 = shap_values[0]
+
+        # Feature Impacts aufbereiten
+        impacts = []
+        for i, feature in enumerate(self.features):
+            impacts.append({
+                'feature': feature,
+                'label': self.feature_info[feature]['label'],
+                'impact': float(shap_vals_class1[i]),
+                'value': float(ordered_data[i])
+            })
+            
+        # Sortieren nach Einfluss
+        impacts_sorted = sorted(impacts, key=lambda x: x['impact'], reverse=True)
         
         return {
             'success': True,
-            'risk_percent': result['risk_percent'],
-            'shap_values': result['shap_values'],
-            'top_positive': result['top_positive'],
-            'top_negative': result['top_negative'],
-            'features_used': self.features,
-            'message': f"Diabetes-Risiko: {result['risk_percent']}%"
+            'risk_percent': round(float(risk_proba * 100), 1),
+            'risk_level': 'Hoch' if risk_proba > 0.5 else 'Mittel' if risk_proba > 0.2 else 'Niedrig',
+            'top_positive': impacts_sorted[:3],
+            'top_negative': impacts_sorted[-3:],
+            'all_impacts': impacts
         }
         
     def validate_input(self, input_data: Dict) -> Dict:
@@ -185,18 +187,17 @@ class DiabetesModell:
         for feature in self.features:
             if feature in input_data:
                 try:
-                    value = float(input_data[feature])
-                    # Prüfe gegen Range
-                    if feature in self.feature_ranges:
-                        min_val = self.feature_ranges[feature]['min']
-                        max_val = self.feature_ranges[feature]['max']
-                        if value < min_val or value > max_val:
-                            errors.append(f"{feature}: Wert {value} außerhalb [{min_val}, {max_val}]")
-                    validated_data[feature] = value
+                    val = float(input_data[feature])
+                    f_min = self.feature_info[feature]['min']
+                    f_max = self.feature_info[feature]['max']
+
+                    if not (f_min <= val <= f_max):
+                        errors.append(f"{self.feature_info[feature]['label']} außerhalb Bereich ({f_min}-{f_max})")
+                    validated_data[feature] = val
                 except ValueError:
-                    errors.append(f"{feature}: Ungültiger Wert")
+                    errors.append(f"{feature} muss eine Zahl sein")
             else:
-                errors.append(f"{feature}: Fehlender Wert")
+                validated_data[feature] = self.feature_info[feature]['default']
         
         return {
             'valid': len(errors) == 0,
@@ -207,7 +208,5 @@ class DiabetesModell:
 # Singleton Instanz
 try:
     diabetes_model = DiabetesModell()
-    print("DiabetesModel erfolgreich initialisiert")
-except Exception as e:
-    print(f"Fehler bei DiabetesModel Initialisierung: {e}")
+except Exception:
     diabetes_model = None

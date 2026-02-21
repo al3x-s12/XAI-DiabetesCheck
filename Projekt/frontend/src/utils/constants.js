@@ -1,0 +1,18 @@
+export const FEATURE_META = {
+  HighBP:           { min: 0, max: 1, defaultValue: 0 },
+  HighChol:         { min: 0, max: 1, defaultValue: 0 },
+  BMI:              { min: 12, max: 98, defaultValue: 28 },
+  Smoker:           { min: 0, max: 1, defaultValue: 0 },
+  Stroke:           { min: 0, max: 1, defaultValue: 0 },
+  HeartDiseaseorAttack: { min: 0, max: 1, defaultValue: 0 },
+  PhysActivity:     { min: 0, max: 1, defaultValue: 1 },
+  Fruits:           { min: 0, max: 1, defaultValue: 1 },
+  Veggies:          { min: 0, max: 1, defaultValue: 1 },
+  HvyAlcoholConsump:{ min: 0, max: 1, defaultValue: 0 },
+  GenHlth:          { min: 1, max: 5, defaultValue: 1 },
+  MentHlth:         { min: 0, max: 30, defaultValue: 0 },
+  PhysHlth:         { min: 0, max: 30, defaultValue: 0 },
+  Age:              { min: 1, max: 13, defaultValue: 5 },
+  Education:        { min: 1, max: 6, defaultValue: 3 },
+  Income:           { min: 1, max: 8, defaultValue: 5 },
+};

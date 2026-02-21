@@ -18,15 +18,19 @@ function App(){
   // Backend-Verbindung prüfen
   useEffect(() => {
     const checkConnection = async () => {
-      const connected = await checkBackendHealth();
-      setBackendConnected(connected);
+      try {
+        const connected = await checkBackendHealth();
+        setBackendConnected(connected);
+      } catch(e){
+        setBackendConnected(false);
+      }
     };
     checkConnection();
   }, []);
 
   const handleFormSubmit = async (data) => {
     setIsLoading(true);
-    setFormData({ ...data, _lastResult: result?.prediction });
+    setFormData({ ...data, _lastResult: result });
     
     try {
       const response = await predictDiabetes(data);
@@ -34,14 +38,11 @@ function App(){
         setResult(response);
       } else {
         console.error('Prediction failed:', response.error);
-        // Fallback: Demo-Ergebnis
-        setResult(getDemoResult(data));
+        alert('Fehler bei der Vorhersage:' + response.error);
       }
     } catch (error) {
       console.error('API Error:', error);
-      // Fallback zu Demo-Modus
-      setBackendConnected(false);
-      setResult(getDemoResult(data));
+      alert('Verbindungsfehler zum Server.')
     } finally {
       setIsLoading(false);
     }
@@ -89,89 +90,194 @@ function App(){
   };
 
   const handleNewWhatIfPrediction = (newResult) => {
-    setResult(newResult);
+    console.log("Neue What-If Berechnung:", newResult);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col">
+    <div
+      style={{
+        minHeight: '100vh',
+        backgroundColor: '#f9fafb', // gray-50
+        display: 'flex',
+        flexDirection: 'column',
+        fontFamily: 'sans-serif',
+        color: '#1f2937', // gray-800
+      }}
+    >
       <Header />
-      
-      <main className="flex-grow container mx-auto px-4 py-8">
+
+      <main
+        style={{
+          flex: '1 0 auto',
+          width: '100%', 
+          margin: '0 auto',
+          padding: '32px 16px', // py-8 px-4
+        }}
+      >
         {!backendConnected && (
-          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg shadow-sm">
-            <div className="flex items-center">
-              <FaExclamationTriangle className="text-yellow-500 mr-3 text-xl" />
+          <div
+            style={{
+              backgroundColor: '#fee2e2', // red-100
+              borderLeft: '4px solid #ef4444', // red-500
+              color: '#b91c1c', // red-700
+              padding: '16px',
+              marginBottom: '24px',
+              borderRadius: '4px',
+              boxShadow: '0 1px 2px 0 rgba(0,0,0,0.05)',
+            }}
+            role="alert"
+          >
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <FaExclamationTriangle style={{ marginRight: '12px', fontSize: '20px' }} />
               <div>
-                <h3 className="font-bold text-yellow-700">Demo-Modus aktiv</h3>
-                <p className="text-yellow-600">
-                  Backend nicht erreichbar. Zeige Demo-Daten. Starte das Backend mit: 
-                  <code className="ml-2 bg-yellow-100 px-2 py-1 rounded text-sm">python app.py</code>
+                <p style={{ fontWeight: 'bold' }}>Keine Verbindung zum Backend</p>
+                <p style={{ fontSize: '14px' }}>
+                  Bitte stellen Sie sicher, dass der Python-Server läuft (Port 5000).
                 </p>
               </div>
             </div>
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr', // immer zwei Spalten nebeneinander
+            gap: '32px',
+          }}
+        >
           {/* Linke Spalte: Formular */}
-          <div className="lg:col-span-2">
-            <FeatureForm 
-              onSubmit={handleFormSubmit} 
-              isLoading={isLoading}
-              backendConnected={backendConnected}
-            />
-            
-            {isLoading && (
-              <div className="mt-8 bg-white rounded-xl shadow-lg p-8 text-center">
-                <FaSpinner className="animate-spin text-4xl text-blue-500 mx-auto mb-4" />
-                <p className="text-gray-700 font-medium">KI-Analyse läuft...</p>
-                <p className="text-gray-500 text-sm mt-2">
-                  Das Modell berechnet Ihr individuelles Risiko und analysiert alle Einflussfaktoren.
+          <div style={{maxWidth: '600px'}}>
+            <div
+              style={{
+                backgroundColor: '#ffffff',
+                borderRadius: '12px',
+                boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)',
+                padding: '24px',
+                borderTop: '4px solid #3b82f6', // blue-500
+              }}
+            >
+              <br />
+              <br />
+              <h2
+                style={{
+                  fontSize: '20px',
+                  fontWeight: 'bold',
+                  marginBottom: '16px',
+                  color: '#1f2937',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <span
+                  style={{
+                    backgroundColor: '#dbeafe', // blue-100
+                    color: '#2563eb', // blue-600
+                    borderRadius: '9999px',
+                    width: '32px',
+                    height: '32px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginRight: '12px',
+                    fontSize: '14px',
+                  }}
+                ></span>
+                Bitte geben Sie Ihre Daten ein
+              </h2>
+              <br />
+              <FeatureForm
+                onSubmit={handleFormSubmit}
+                isLoading={isLoading}
+                backendConnected={backendConnected}
+              />
+            </div>
+          </div>
+
+          {/* Rechte Spalte: Analyse & Tools */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            {/* Willkommens-Platzhalter */}
+            {!result && !isLoading && (
+              <div
+                style={{
+                  backgroundColor: '#ffffff',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)',
+                  padding: '40px',
+                  textAlign: 'center',
+                  border: '2px dashed #e5e7eb',
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <div
+                  style={{
+                    backgroundColor: '#eff6ff', // blue-50
+                    padding: '16px',
+                    borderRadius: '9999px',
+                    marginBottom: '16px',
+                  }}
+                >
+                  <FaSpinner style={{ fontSize: '36px', color: '#93c5fd' }} />
+                </div>
+                <h3 style={{ fontSize: '20px', fontWeight: '600', color: '#4b5563' }}>
+                  Bereit zur Analyse
+                </h3>
+                <p
+                  style={{
+                    color: '#6b7280',
+                    maxWidth: '28rem',
+                    marginTop: '8px',
+                  }}
+                >
+                  Geben Sie die Patientendaten links ein, um eine KI-gestützte Risikobewertung zu erhalten.
                 </p>
               </div>
             )}
-          </div>
 
-          {/* Rechte Spalte: What-If Analyse */}
-          <div className="lg:col-span-1">
-            {formData && !isLoading && (
-              <WhatIfAnalysis 
-                currentData={formData}
-                onNewPrediction={handleNewWhatIfPrediction}
-                features={result?.features_used}
-              />
+            {/* Lade-Animation */}
+            {isLoading && (
+              <div
+                style={{
+                  backgroundColor: '#ffffff',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)',
+                  padding: '48px',
+                  textAlign: 'center',
+                  height: '256px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <FaSpinner style={{ fontSize: '48px', color: '#2563eb', marginBottom: '16px' }} />
+                <p style={{ fontSize: '18px', fontWeight: '500', color: '#4b5563' }}>
+                  Analysiere Risikofaktoren...
+                </p>
+                <p style={{ fontSize: '14px', color: '#9ca3af', marginTop: '8px' }}>
+                  Berechne SHAP-Werte und Konfidenz
+                </p>
+              </div>
+            )}
+
+            {/* Ergebnis-Anzeige */}
+            {result && !isLoading && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+                <ResultDisplay result={result} />
+                <ShapVisualization shapValues={result.all_impacts} />
+                <WhatIfAnalysis
+                  currentData={formData}
+                  result={result}
+                  onNewPrediction={handleNewWhatIfPrediction}
+                />
+              </div>
             )}
           </div>
         </div>
-
-        {/* Ergebnisse */}
-        {result && !isLoading && (
-          <div className="mt-8 space-y-8">
-            <ResultDisplay result={result} shapValues={result.shap_values} />
-            
-            <ShapVisualization shapValues={result.shap_values} />
-            
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h3 className="text-xl font-bold text-gray-800 mb-4">Über diese Analyse</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="font-semibold text-gray-700 mb-2">KI-Modell</h4>
-                  <p className="text-gray-600">
-                    Verwendet Random Forest mit SHAP für erklärbare KI. 
-                    Trainiert auf CDC-Daten mit 250.000+ Einträgen.
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-700 mb-2">SHAP-Erklärungen</h4>
-                  <p className="text-gray-600">
-                    SHAP (SHapley Additive exPlanations) zeigt, welche Faktoren 
-                    wie stark zur Risikobewertung beitragen.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </main>
 
       <Footer />

@@ -1,6 +1,7 @@
 import pytest
 import sys
 import os
+import json
 
 # Dem Systempfad das backend-Verzeichnis hinzufügen
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -8,8 +9,6 @@ backend_dir = os.path.dirname(current_dir)
 sys.path.insert(0, backend_dir)
 
 from app import create_app
-import json
-
 
 @pytest.fixture
 def client():
@@ -25,34 +24,36 @@ def test_health_check(client):
     data = json.loads(response.data)
     assert data['status'] == 'healthy'
 
-def test_features_enpoint(client):
+def test_features_endpoint(client):
     """Testet den Features Endpoint"""
     response = client.get('/api/features')
     assert response.status_code == 200
     data = json.loads(response.data)
+
     assert data['success'] == True
     assert 'features' in data['data']
+    assert 'feature_info' in data['data']
+    assert len(data['data']['features']) > 0
 
 def test_predict_enpoint_valid(client):
-    """Testet die Vorhersage mit gültigen Daten"""
-    # Minimales Test-Set
+    """Testet die Vorhersage mit vollständigen Daten"""
     test_data = {
-        'HighBP': 0,
-        'HighChol': 0,
-        'BMI': 25.0,
-        'Smoker': 0,
+        'HighBP': 1,
+        'HighChol': 1,
+        'BMI': 30.0,
+        'Smoker': 1,
         'Stroke': 0,
         'HeartDiseaseorAttack': 0,
-        'PhysActivity': 1,
-        'Fruits': 1,
+        'PhysActivity': 0,
+        'Fruits': 0,
         'Veggies': 1,
         'HvyAlcoholConsump': 0,
-        'GenHlth': 2,
-        'MentHlth': 0,
-        'PhysHlth': 0,
-        'Age': 5,
+        'GenHlth': 3,
+        'MentHlth': 5,
+        'PhysHlth': 2,
+        'Age': 9,
         'Education': 4,
-        'Income': 6
+        'Income': 5
     }
 
     response = client.post('/api/predict',
@@ -61,14 +62,53 @@ def test_predict_enpoint_valid(client):
     
     assert response.status_code == 200
     data = json.loads(response.data)
+
     assert data['success'] == True
-    assert 'risk_percent' in data['prediction']
-    assert 0 <= data['prediction']['risk_percent'] <= 100
+    assert 'risk_percent' in data
+    assert 'risk_category' in data
+    assert 'explanations' in data
+
+    assert isinstance(data['risk_percent'], float)
+    assert data['risk_category'] in ['Niedrig', 'Mittel', 'Hoch']
+    assert len(data['explanations']['top_positive']) >= 0
+
+def test_predict_endpoint_partial_data(client):
+    partial_data = {
+        'BMI': 40.0,
+        'Age': 10
+        # Rest fehlt -> wird Median
+    }
+
+    response = client.post('/api/predict',
+                           json=partial_data,
+                           content_type='application/json')
+    
+    assert response.status_code == 200
+    data = json.loads(response.data)
+    assert data['success'] == True
+    # BMI 40 ist hoch, Risiko sollte also berechnet werden
+    assert data['risk_percent'] > 0
+
+def test_predict_endpoint_invalid_values(client):
+    invalid_data = {
+        'BMI': 200.0,   # Zu hoch (unrealistisch)
+        'Age': 25       # Range ist meist 1-13 (Kategorien)
+    }
+
+    response = client.post('/api/predict',
+                           json=invalid_data,
+                           content_type='application/json')
+    
+    assert response.status_code == 400
+    data = json.loads(response.data)
+    assert data['success'] == False
+    assert 'errors' in data
+    assert len(data['errors']) > 0
 
 def test_predict_endpoint_invalid_json(client):
     """Testet mit ungültigem JSON"""
     response = client.post('/api/predict',
-                           data = "invalid json",
+                           data = "das ist kein json",
                            content_type='application/json')
     assert response.status_code == 400
 
@@ -78,11 +118,10 @@ def test_predict_endpoint_missing_data(client):
                            json={'HighBP': 1},
                            content_type='application/json')
     
-    # Sollte einen 400 Fehler geben, weil Daten fehlen
-    assert response.status_code == 400  # Geändert von 200 auf 400
+    # Sollte funktionieren, trotz fehlender Daten
+    assert response.status_code == 200
     data = json.loads(response.data)
-    assert data['success'] == False
-    assert 'validation_errors' in data  # Es sollten Validierungsfehler zurückgegeben werden
+    assert data['success'] == True
 
 
 if __name__ == '__main__':

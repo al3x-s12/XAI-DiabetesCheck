@@ -60,27 +60,23 @@ def format_shap_for_frontend(shap_values: Dict) -> Dict:
 
 def generate_explanation_text(result: Dict) -> str:
     """Generiert einen erklärenden Text für die Vorhersage"""
-    risk = result['risk_percent']
-    category = result['rist_category']
+    risk = result.get('risk_percent', 0)
+    category = result.get('risk_category', 'Unbekannt')
 
     explanations = []
+    explanations.append(f"Basierend auf Ihren Angaben besteht ein {category.lower()}es Risiko für Diabetes ({risk}%).")
+
 
     # Positive Einflüsse
-    if result.get('top_positive'):
-        pos_features = [item['features'] for item in result['top_positive']]
-        if pos_features:
-            explanations.append(f"Das Risiko wird erhöht durch: {', '.join(pos_features[:2])}")
-
+    top_pos = result.get('explanations', {}).get('top_positive', [])
+    if top_pos:
+        drivers = [item['label'] for item in top_pos]
+        explanations.append(f"Die stärksten Risikofaktoren sind: {', '.join(drivers)}.")
+    
     # Negative Einflüsse
-    if result.get('top_negative'):
-        neg_features = [item['feature'] for item in result['top_negative']]
-        if neg_features:
-            explanations.append(f"Das Risiko wird gesenkt durch: {', '.join(neg_features[:2])}")
+    top_neg = result.get('explanations', {}).get('top_negative', [])
+    if top_neg:
+        protectors = [item['label'] for item in top_neg]
+        explanations.append(f"Positiv wirken sich aus: {', '.join(protectors)}.")
 
-    # Bais-Erklärung
-    base_text = f"Ihr Diabetes-Risiko liegt bei {risk}% ({category}es Risiko)."
-
-    if explanations:
-        return f"{base_text} {' '.join(explanations)}"
-    else:
-        return base_text
+    return " ".join(explanations)

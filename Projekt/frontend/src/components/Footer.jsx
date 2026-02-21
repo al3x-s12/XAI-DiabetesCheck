@@ -3,23 +3,61 @@ import { FaGithub, FaInfoCircle } from 'react-icons/fa';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white py-6 mt-12">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="mb-4 md:mb-0">
-            <h3 className="text-lg font-semibold">XAI-DiabetesCheck</h3>
-            <p className="text-gray-400 text-sm mt-1">
+    <footer
+      style={{
+        backgroundColor: '#ffffff', // gray-800
+        color: '#000000',
+        paddingTop: '24px',
+        paddingBottom: '24px',
+        marginTop: '48px',           // mt-12
+      }}
+    >
+      <div
+        style={{
+          maxWidth: '1280px',
+          margin: '0 auto',
+          paddingLeft: '16px',
+          paddingRight: '16px',
+        }}
+      >
+        {/* Hauptbereich */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',  // immer untereinander
+            alignItems: 'center',
+            gap: '16px',
+          }}
+        >
+          {/* Linke Sektion (Logo / Beschreibung) */}
+          <div style={{ textAlign: 'center' }}>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '4px' }}>
+              XAI-DiabetesCheck
+            </h3>
+            <p style={{ color: '#9ca3af', fontSize: '0.875rem' }}>
               Ein Projekt zur erklärbaren KI in der Diabetes-Risikobewertung
             </p>
           </div>
+
+          {/* Platz für Icons oder Links – aktuell leer, aber Struktur vorhanden */}
         </div>
-        
-        <div className="mt-6 pt-6 border-t border-gray-700 text-center text-gray-400 text-sm">
+
+        {/* Fußzeile mit Trennlinie und rechtlichen Hinweisen */}
+        <div
+          style={{
+            marginTop: '24px',
+            paddingTop: '24px',
+            borderTop: '1px solid #374151', // gray-700
+            textAlign: 'center',
+            color: '#9ca3af',
+            fontSize: '0.875rem',
+          }}
+        >
           <p>
-            Dieses Tool dient nur zu Forschungs- und Informationszwecken. 
+            Dieses Tool dient nur zu Forschungs- und Informationszwecken.
             Kein Ersatz für medizinische Beratung.
           </p>
-          <p className="mt-1">© 2026 XAI-DiabetesCheck Projekt</p>
+          <p style={{ marginTop: '4px' }}>© 2026 XAI-DiabetesCheck Projekt</p>
         </div>
       </div>
     </footer>

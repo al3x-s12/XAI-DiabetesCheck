@@ -1,11 +1,76 @@
-import React, { useState } from 'react';
-import { FaLightbulb, FaExchangeAlt, FaUndo } from 'react-icons/fa';
+import React, { useMemo, useState, useEffect } from 'react';
+import { FaLightbulb, FaUndo, FaArrowRight } from 'react-icons/fa';
 import { predictDiabetes } from '../services/api';
+import { FEATURE_META } from '../utils/constants';
 
-const WhatIfAnalysis = ({ currentData, onNewPrediction, features }) => {
+const ageToClass = (age) => {
+  if (age < 25) return 1;
+  if (age < 30) return 2;
+  if (age < 35) return 3;
+  if (age < 40) return 4;
+  if (age < 45) return 5;
+  if (age < 50) return 6;
+  if (age < 55) return 7;
+  if (age < 60) return 8;
+  if (age < 65) return 9;
+  if (age < 70) return 10;
+  if (age < 75) return 11;
+  if (age < 80) return 12;
+  return 13;
+};
+
+const classToAge = (cls) => {
+  switch (cls) {
+    case 1: return 18;
+    case 2: return 25;
+    case 3: return 30;
+    case 4: return 35;
+    case 5: return 40;
+    case 6: return 45;
+    case 7: return 50;
+    case 8: return 55;
+    case 9: return 60;
+    case 10: return 65;
+    case 11: return 70;
+    case 12: return 75;
+    case 13: return 80;
+    default: return 40;
+  }
+};
+
+
+const WhatIfAnalysis = ({ currentData, onNewPrediction, result }) => {
   const [whatIfData, setWhatIfData] = useState({ ...currentData });
-  const [isLoading, setIsLoading] = useState(false);
   const [whatIfResult, setWhatIfResult] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [ageYear, setAgeYear] = useState(() =>
+    currentData?.Age ? classToAge(currentData.Age) : 40
+  );
+
+  useEffect(() => {
+    if (currentData?.Age !== undefined) {
+      setAgeYear(classToAge(currentData.Age));
+    }
+  }, [currentData?.Age]);
+
+  const baseRisk = currentData?._lastResult?.risk_percent || 0;
+
+  console.log('🔍 WhatIfAnalysis - result:', result);
+  console.log('🔍 WhatIfAnalysis - all_impacts:', result?.all_impacts);
+
+  const topFeatures = useMemo(() => {
+    if (result?.all_impacts?.length) {
+      return result.all_impacts
+        .filter(item => item.impact > 0)
+        .sort((a, b) => b.impact - a.impact)
+        .slice(0, 3)
+        .map(item => item.feature);
+    }
+    if (result?.explanations?.top_positive?.length) {
+      return result.explanations.top_positive.slice(0, 3).map(e => e.feature);
+    }
+    return ['BMI', 'PhysActivity', 'Fruits'];
+  }, [result]);
 
   const handleWhatIfChange = (feature, value) => {
     setWhatIfData(prev => ({
@@ -14,18 +79,25 @@ const WhatIfAnalysis = ({ currentData, onNewPrediction, features }) => {
     }));
   };
 
+  const handleAgeChange = (years) => {
+    setAgeYear(years);
+    const newClass = ageToClass(years);
+    setWhatIfData(prev => ({ ...prev, Age: newClass }));
+  };
+
   const runWhatIfAnalysis = async () => {
     setIsLoading(true);
     try {
-      const response = await predictDiabetes(whatIfData);
+      // Daten bereinigen (_lastResult entfernen bevor wir senden)
+      const { _lastResult, ...dataToSend } = whatIfData;
+      
+      const response = await predictDiabetes(dataToSend);
       if (response.success) {
-        setWhatIfResult(response);
-        if (onNewPrediction) {
-          onNewPrediction(response);
-        }
+        setWhatIfResult(response); // Speichere das flache Response-Objekt
+        if (onNewPrediction) onNewPrediction(response);
       }
     } catch (error) {
-      console.error('Error in what-if analysis:', error);
+      console.error('Error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -34,117 +106,278 @@ const WhatIfAnalysis = ({ currentData, onNewPrediction, features }) => {
   const resetToCurrent = () => {
     setWhatIfData({ ...currentData });
     setWhatIfResult(null);
+    if (currentData?.Age) {
+      setAgeYear(classToAge(currentData.Age));
+    }
   };
 
-  if (!features || features.length === 0) return null;
-
-  // Wähle nur ein paar wichtige Features für What-If
-  const importantFeatures = ['HighBP', 'HighChol', 'BMI', 'PhysActivity', 'Age'];
+  // Wähle 3 interessante Features zum Spielen (Hardcoded oder dynamisch)
+  const demoFeatures = ['BMI', 'PhysActivity', 'Fruits'];
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6">
-      <div className="flex items-center mb-6">
-        <FaLightbulb className="text-yellow-500 mr-3 text-2xl" />
-        <div>
-          <h3 className="text-xl font-bold text-gray-800">What-If Analyse</h3>
-          <p className="text-gray-600">
-            Ändern Sie Werte virtuell und sehen Sie, wie sich Ihr Risiko verändert
-          </p>
-        </div>
+    <div
+      style={{
+        background: 'linear-gradient(to right, #eff6ff, #eef2ff)', // from-blue-50 to-indigo-50
+        borderRadius: '12px',
+        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+        padding: '24px',
+        border: '1px solid #dbeafe', // blue-100
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+        <FaLightbulb style={{ color: '#eab308', fontSize: '20px', marginRight: '8px' }} />
+        <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1f2937' }}>
+          Was-wäre-wenn Analyse
+        </h3>
       </div>
 
-      <div className="mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {importantFeatures.map(feature => (
-            feature in currentData && (
-              <div key={feature} className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  {feature === 'HighBP' ? 'Bluthochdruck' : 
-                   feature === 'HighChol' ? 'Cholesterin' : 
-                   feature === 'BMI' ? 'BMI' : 
-                   feature === 'PhysActivity' ? 'Aktivität' : 'Alter'}
+      <p
+        style={{
+          fontSize: '14px',
+          color: '#4b5563',
+          marginBottom: '24px',
+        }}
+      >
+        Simulieren Sie Veränderungen: Wie würde sich das Risiko ändern, wenn der Patient abnimmt oder sich mehr bewegt?
+      </p>
+
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '24px',
+          marginBottom: '24px',
+        }}
+      >
+        {topFeatures.map(feature => {
+
+          if (feature === 'Age') {
+            return (
+              <div
+                key={feature}
+                style={{
+                  backgroundColor: '#ffffff',
+                  padding: '12px',
+                  borderRadius: '4px',
+                  boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                }}
+              >
+                <label
+                  style={{
+                    display: 'block',
+                    fontSize: '12px',
+                    fontWeight: 'bold',
+                    color: '#6b7280',
+                    marginBottom: '4px',
+                  }}
+                >
+                  Alter (Jahre)
                 </label>
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="range"
-                    min={feature === 'BMI' ? 15 : 0}
-                    max={feature === 'BMI' ? 45 : 
-                          feature === 'Age' ? 13 : 1}
-                    step={feature === 'BMI' ? 0.5 : 1}
-                    value={whatIfData[feature] || 0}
-                    onChange={(e) => handleWhatIfChange(feature, e.target.value)}
-                    className="flex-grow h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                  />
-                  <span className="font-bold min-w-[40px] text-center">
-                    {feature === 'BMI' ? parseFloat(whatIfData[feature] || 0).toFixed(1) : whatIfData[feature] || 0}
-                  </span>
-                </div>
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Aktuell: {currentData[feature]}</span>
-                  {whatIfData[feature] !== currentData[feature] && (
-                    <span className="font-bold text-blue-600">
-                      {whatIfData[feature] > currentData[feature] ? '↑' : '↓'}
-                    </span>
-                  )}
+                <input
+                  type="range"
+                  min={18}
+                  max={90}
+                  step={1}
+                  value={ageYear}
+                  onChange={(e) => handleAgeChange(parseInt(e.target.value, 10))}
+                  style={{
+                    height: '8px',
+                    backgroundColor: '#dbeafe',
+                    borderRadius: '8px',
+                    appearance: 'none',
+                    cursor: 'pointer',
+                    width: '100%',
+                  }}
+                />
+                <div
+                  style={{
+                    textAlign: 'center',
+                    fontWeight: 'bold',
+                    color: '#000000',
+                    marginTop: '5px',
+                    marginBottom: '5px',
+                  }}
+                >
+                  {ageYear}
                 </div>
               </div>
-            )
-          ))}
-        </div>
+            );
+          }
+
+          // Spezialbehandlung für Bildungsabschluss
+          if (feature === 'Education') {
+            const educationLabels = {
+              1: 'Kein Abschluss',
+              2: 'Grundschule',
+              3: 'Schulabschluss',
+              4: 'Abitur',
+              5: 'Student/in',
+              6: 'Akademiker/in'
+            };
+            const currentValue = whatIfData[feature] || 1;
+            const displayText = educationLabels[currentValue] || currentValue;
+
+            return (
+              <div
+                key={feature}
+                style={{
+                  backgroundColor: '#ffffff',
+                  padding: '12px',
+                  borderRadius: '4px',
+                  boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                }}
+              >
+                <label
+                  style={{
+                    display: 'block',
+                    fontSize: '12px',
+                    fontWeight: 'bold',
+                    color: '#6b7280',
+                    marginBottom: '4px',
+                  }}
+                >
+                  Bildungsabschluss
+                </label>
+                <input
+                  type="range"
+                  min={1}
+                  max={6}
+                  step={1}
+                  value={currentValue}
+                  onChange={(e) => handleWhatIfChange(feature, e.target.value)}
+                  style={{
+                    height: '8px',
+                    backgroundColor: '#dbeafe',
+                    borderRadius: '8px',
+                    appearance: 'none',
+                    cursor: 'pointer',
+                    width: '100%',
+                  }}
+                />
+                <div
+                  style={{
+                    textAlign: 'center',
+                    fontWeight: 'bold',
+                    color: '#000000',
+                    marginTop: '5px',
+                    marginBottom: '5px',
+                  }}
+                >
+                  {displayText}
+                </div>
+              </div>
+            );
+          }
+
+          const meta = FEATURE_META[feature] || { min: 0, max: 1, step: 1 };
+          return (
+            <div
+              key={feature}
+              style={{
+                backgroundColor: '#ffffff',
+                padding: '12px',
+                borderRadius: '4px',
+                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+              }}
+            >
+              <label
+                style={{
+                  display: 'block',
+                  fontSize: '12px',
+                  fontWeight: 'bold',
+                  color: '#6b7280',
+                  marginBottom: '4px',
+                }}
+              >
+                {feature}
+              </label>
+              <input
+                type="range"
+                min={meta.min}
+                max={meta.max}
+                step={meta.step}
+                value={whatIfData[feature] || 0}
+                onChange={(e) => handleWhatIfChange(feature, e.target.value)}
+                style={{
+                  height: '8px',
+                  backgroundColor: '#dbeafe',
+                  borderRadius: '8px',
+                  appearance: 'none',
+                  cursor: 'pointer',
+                  width: '100%',
+                }}
+              />
+              <div
+                style={{
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                  color: '#000000',
+                  marginTop: '5px',
+                  marginBottom: '5px',
+                }}
+              >
+                {whatIfData[feature]}
+              </div>
+            </div>
+          );
+        })}
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div style={{ display: 'flex', gap: '16px', marginTop: '20px' }}>
         <button
           onClick={runWhatIfAnalysis}
           disabled={isLoading}
-          className={`flex-1 py-3 px-4 rounded-md font-semibold text-white transition-colors flex items-center justify-center ${
-            isLoading 
-              ? 'bg-gray-400 cursor-not-allowed' 
-              : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'
-          }`}
+          style={{
+            flex: 1,
+            backgroundColor: '#2563eb',
+            color: '#ffffff',
+            padding: '8px 16px',
+            borderRadius: '4px',
+            border: 'none',
+            cursor: isLoading ? 'not-allowed' : 'pointer',
+            opacity: isLoading ? 0.6 : 1,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
         >
-          {isLoading ? (
-            <>
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-              Berechne...
-            </>
-          ) : (
-            <>
-              <FaExchangeAlt className="mr-2" />
-              Neu berechnen mit geänderten Werten
-            </>
-          )}
+          {isLoading ? 'Berechne...' : 'Simulation starten'}
         </button>
-
         <button
           onClick={resetToCurrent}
-          className="py-3 px-6 rounded-md font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors flex items-center justify-center"
+          style={{
+            padding: '8px',
+            backgroundColor: '#e5e7eb',
+            borderRadius: '4px',
+            color: '#4b5563',
+            border: 'none',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
         >
-          <FaUndo className="mr-2" />
-          Zurücksetzen
+          <FaUndo />
         </button>
       </div>
 
-      {whatIfResult && whatIfResult.prediction && (
-        <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-md">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-bold text-gray-800">Neues Ergebnis:</h4>
-              <p className="text-lg font-bold text-blue-600">
-                Risiko: {whatIfResult.prediction.risk_percent}% 
-                <span className="ml-2 text-sm font-normal">
-                  ({whatIfResult.prediction.risk_category})
-                </span>
-              </p>
-            </div>
-            <div className="text-right">
-              <p className="text-sm text-gray-600">
-                {whatIfResult.prediction.risk_percent > (currentData._lastResult?.risk_percent || 0) 
-                  ? 'Risiko erhöht' 
-                  : 'Risiko gesenkt'}
-              </p>
-            </div>
-          </div>
+      {whatIfResult && (
+        <div
+          style={{
+            marginTop: '24px',
+            padding: '16px',
+            backgroundColor: '#ffffff',
+            borderRadius: '8px',
+            border: '1px solid #bfdbfe',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <p style={{ fontSize: '14px', color: '#6b7280' }}>Neues Risiko:</p>
+          <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937' }}>
+            {whatIfResult.risk_percent}%
+          </p>
         </div>
       )}
     </div>

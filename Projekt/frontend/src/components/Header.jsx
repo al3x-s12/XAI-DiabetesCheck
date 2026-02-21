@@ -3,20 +3,44 @@ import { FaHeartbeat, FaBrain } from 'react-icons/fa'
 
 const Header = () => {
   return (
-    <header className="bg-gradient-to-r from-diabetes-blue to-blue-600 text-white shadow-lg">
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+    <header
+      style={{
+        backgroundColor: '#ffffff',           // diabetes-blue / blue-600
+        color: '#000000',
+        boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: '1280px',
+          margin: '0 auto',
+          padding: '24px 16px',               // py-6 (24px) + px-4 (16px)
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          {/* Linke Seite: Titel & Untertitel */}
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold">XAI-DiabetesCheck</h1>
-              <p className="text-blue-100 text-sm md:text-base">
+              <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold' }}>
+                XAI-DiabetesCheck
+              </h1>
+              <p style={{ color: '#000000', fontSize: '1rem' }}>
                 Erklärbare KI für Diabetes-Risikobewertung
               </p>
             </div>
           </div>
-          <div className="hidden md:block text-right">
-            <p className="text-sm text-blue-100">10CP Projektarbeit</p>
-            <p className="text-xs text-blue-200">Explainable AI in der Medizin</p>
+
+          {/* Rechte Seite: Projektinfo (immer sichtbar) */}
+          <div style={{ textAlign: 'right' }}>
+            <p style={{ color: '#000000', fontSize: '0.875rem', fontWeight: 'bold' }}>
+              10 CP Projektarbeit
+            </p>
           </div>
         </div>
       </div>
