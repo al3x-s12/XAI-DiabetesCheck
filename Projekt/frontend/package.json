@@ -30,5 +30,13 @@
     "globals": "^16.5.0",
     "tailwindcss": "^4.1.18",
     "vite": "^7.2.4"
-  }
+  },
+  "homepage": "https://al3x-s12.github.io/XAI-DiabetesCheck",
+  "scripts": {
+  "dev": "vite",
+  "build": "vite build",
+  "preview": "vite preview",
+  "predeploy": "npm run build",
+  "deploy": "push-dir --dir=dist --branch=gh-pages --cleanup --allow-dirty"
+}
 }
