@@ -7,7 +7,6 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import { predictDiabetes, checkBackendHealth } from './services/api';
 import { FaSpinner, FaExclamationTriangle } from 'react-icons/fa';
-import './App.css';
 
 function App(){
   const [result, setResult] = useState(null);
