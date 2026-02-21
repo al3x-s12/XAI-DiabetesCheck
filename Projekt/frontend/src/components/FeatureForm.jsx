@@ -251,6 +251,56 @@ const FeatureForm = ({onSubmit, isLoading, backendConnected}) => {
       );
     }
 
+    // Spezialbehandlung für Einkommen
+    if (feature === 'Income') {
+      const incomeLabels = {
+        1: 'Weniger als 10.000$',
+        2: '~10.000$',
+        3: '~15.000$',
+        4: '~20.000$',
+        5: '~25.000$',
+        6: '~35.000$',
+        7: '~50.000$',
+        8: 'Mehr als 75.000$'
+      };
+      const currentValue = formData[feature] || 1;
+      const displayText = incomeLabels[currentValue] || currentValue;
+
+      return (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <input
+            type="range"
+            name={feature}
+            min={1}
+            max={8}
+            step={1}
+            value={currentValue}
+            onChange={handleChange}
+            style={{
+              width: '192px',
+              height: '8px',
+              backgroundColor: '#e5e7eb',
+              borderRadius: '8px',
+              appearance: 'none',
+              cursor: 'pointer',
+              accentColor: '#2563eb',
+            }}
+          />
+          <span
+            style={{
+              marginLeft: '10px',
+              fontFamily: 'monospace',
+              fontWeight: '500',
+              color: '#374151',
+              minWidth: '140px',
+            }}
+          >
+            {displayText}
+          </span>
+        </div>
+      );
+    }
+
         const info = featureInfo[feature] || { min: 0, max: 1 };
         const min = info.min;
         const max = info.max;

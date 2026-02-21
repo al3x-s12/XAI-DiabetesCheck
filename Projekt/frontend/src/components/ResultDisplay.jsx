@@ -1,6 +1,6 @@
 import React from 'react';
 import { getRiskCategory } from '../utils/formatters';
-import { FaChartLine, FaInfoCircle, FaArrowUp, FaArrowDown } from 'react-icons/fa';
+import { FaChartLine, FaArrowUp, FaArrowDown } from 'react-icons/fa';
 
 const ResultDisplay = ({ result }) => {
   if (!result) return null;
@@ -19,10 +19,10 @@ const ResultDisplay = ({ result }) => {
         borderRadius: '12px',
         boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)',
         padding: '24px',
-        borderTop: '4px solid #22c55e', // green-500
+        borderTop: '4px solid #22c55e',
       }}
     >
-      {/* Header */}
+      {/* Überschrift */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
         <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937' }}>Ergebnis der Analyse</h2>
         <div
@@ -30,17 +30,16 @@ const ResultDisplay = ({ result }) => {
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            backgroundColor: '#f3f4f6', // gray-100
+            backgroundColor: '#f3f4f6',
             padding: '4px 12px',
             borderRadius: '9999px',
           }}
         >
           <FaChartLine style={{ color: '#3b82f6' }} />
-          <span style={{ fontSize: '14px', fontWeight: '500', color: '#4b5563' }}>KI-Modell v1.0</span>
         </div>
       </div>
 
-      {/* Hauptbereich: 2 Spalten (auf kleinen Bildschirmen 1 Spalte) */}
+      {/* Hauptbereich: 2 Spalten*/}
       <div
         style={{
           display: 'grid',
@@ -58,7 +57,7 @@ const ResultDisplay = ({ result }) => {
             alignItems: 'center',
             justifyContent: 'center',
             textAlign: 'center',
-            backgroundColor: categoryInfo.bgColor,   // z.B. '#f0fdf4' für grün
+            backgroundColor: categoryInfo.bgColor,
           }}
         >
           <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#374151', marginBottom: '8px' }}>
@@ -76,21 +75,20 @@ const ResultDisplay = ({ result }) => {
               margin: '16px 0',
             }}
           >
-            {/* SVG-Kreis (Hintergrund + Fortschritt) */}
+            {/* SVG-Kreis*/}
             <svg style={{ width: '100%', height: '100%' }} viewBox="0 0 36 36">
-              {/* grauer Hintergrundkreis */}
               <path
                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                 fill="none"
                 stroke="#e5e7eb"
                 strokeWidth="3"
               />
-              {/* farbiger Fortschrittsbogen */}
+              {/* Fortschrittsbogen */}
               <path
                 strokeDasharray={`${risk_percent}, 100`}
                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                 fill="none"
-                stroke={categoryInfo.strokeColor}   // Hex-Farbe, z.B. '#16a34a'
+                stroke={categoryInfo.strokeColor}
                 strokeWidth="3"
                 strokeLinecap="round"
               />
@@ -104,7 +102,7 @@ const ResultDisplay = ({ result }) => {
             </div>
           </div>
 
-          {/* Kategorie-Badge */}
+          {/* Kategorie*/}
           <div
             style={{
               padding: '4px 16px',
@@ -122,13 +120,13 @@ const ResultDisplay = ({ result }) => {
 
         {/* Rechte Spalte: Faktoren */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {/* Risikotreiber */}
+          {/* Haupt-Risikofaktoren */}
           <div
             style={{
-              backgroundColor: '#fef2f2', // red-50
+              backgroundColor: '#fef2f2',
               padding: '16px',
               borderRadius: '8px',
-              border: '1px solid #fee2e2', // red-100
+              border: '1px solid #fee2e2',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
@@ -160,13 +158,13 @@ const ResultDisplay = ({ result }) => {
             )}
           </div>
 
-          {/* Schutzfaktoren */}
+          {/* Schützende Faktoren */}
           <div
             style={{
-              backgroundColor: '#f0fdf4', // green-50
+              backgroundColor: '#f0fdf4',
               padding: '16px',
               borderRadius: '8px',
-              border: '1px solid #dcfce7', // green-100
+              border: '1px solid #dcfce7',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>

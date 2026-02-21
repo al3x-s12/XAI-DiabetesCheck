@@ -2,7 +2,7 @@
 export const FEATURE_LABELS = {
   'HighBP': 'Bluthochdruck',
   'HighChol': 'Hoher Cholesterinwert',
-  'BMI': 'Body Mass Index',
+  'BMI': 'Body-Mass-Index',
   'Smoker': 'Raucher',
   'Stroke': 'Schlaganfall',
   'HeartDiseaseorAttack': 'Herzerkrankung',
@@ -35,7 +35,7 @@ export const FEATURE_DESCRIPTIONS = {
   'PhysHlth': '0-30 Tage im Monat',
   'Age': 'Wie alt sind Sie?',
   'Education': 'Wie hoch ist Ihr Bildungsabschluss?',
-  'Income': '1 = <10k$, 2 = >10k$, 3 = >15k$, 4 = >20k$, 5 = >25k$, 6 = >35k$, 7 = >50k$ 8 = >75k$'
+  'Income': 'Wie hoch ist Ihr jährliches Einkommen?'
 };
 
 // Formatierung von Werten

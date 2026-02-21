@@ -5,11 +5,11 @@ const Footer = () => {
   return (
     <footer
       style={{
-        backgroundColor: '#ffffff', // gray-800
+        backgroundColor: '#ffffff',
         color: '#000000',
         paddingTop: '24px',
         paddingBottom: '24px',
-        marginTop: '48px',           // mt-12
+        marginTop: '48px',
       }}
     >
       <div
@@ -24,30 +24,28 @@ const Footer = () => {
         <div
           style={{
             display: 'flex',
-            flexDirection: 'column',  // immer untereinander
+            flexDirection: 'column', //untereinander
             alignItems: 'center',
             gap: '16px',
           }}
         >
-          {/* Linke Sektion (Logo / Beschreibung) */}
+          {/*Beschreibung*/}
           <div style={{ textAlign: 'center' }}>
             <h3 style={{ fontSize: '1.125rem', fontWeight: '600', marginBottom: '4px' }}>
               XAI-DiabetesCheck
             </h3>
             <p style={{ color: '#9ca3af', fontSize: '0.875rem' }}>
-              Ein Projekt zur erklärbaren KI in der Diabetes-Risikobewertung
+              Projektarbeit einer erklärbaren KI in der Diabetes-Risikobewertung
             </p>
           </div>
-
-          {/* Platz für Icons oder Links – aktuell leer, aber Struktur vorhanden */}
         </div>
 
-        {/* Fußzeile mit Trennlinie und rechtlichen Hinweisen */}
+        {/* Fußnote*/}
         <div
           style={{
             marginTop: '24px',
             paddingTop: '24px',
-            borderTop: '1px solid #374151', // gray-700
+            borderTop: '1px solid #374151',
             textAlign: 'center',
             color: '#9ca3af',
             fontSize: '0.875rem',
@@ -57,7 +55,7 @@ const Footer = () => {
             Dieses Tool dient nur zu Forschungs- und Informationszwecken.
             Kein Ersatz für medizinische Beratung.
           </p>
-          <p style={{ marginTop: '4px' }}>© 2026 XAI-DiabetesCheck Projekt</p>
+          <p style={{ marginTop: '4px' }}>2026 XAI-DiabetesCheck</p>
         </div>
       </div>
     </footer>

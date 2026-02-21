@@ -5,7 +5,7 @@ const Header = () => {
   return (
     <header
       style={{
-        backgroundColor: '#ffffff',           // diabetes-blue / blue-600
+        backgroundColor: '#ffffff',
         color: '#000000',
         boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)',
       }}
@@ -14,7 +14,7 @@ const Header = () => {
         style={{
           maxWidth: '1280px',
           margin: '0 auto',
-          padding: '24px 16px',               // py-6 (24px) + px-4 (16px)
+          padding: '24px 16px',
         }}
       >
         <div
@@ -36,12 +36,7 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Rechte Seite: Projektinfo (immer sichtbar) */}
-          <div style={{ textAlign: 'right' }}>
-            <p style={{ color: '#000000', fontSize: '0.875rem', fontWeight: 'bold' }}>
-              10 CP Projektarbeit
-            </p>
-          </div>
+          {/* Rechte Seite: Projektinfo (aktuell leer)*/}
         </div>
       </div>
     </header>

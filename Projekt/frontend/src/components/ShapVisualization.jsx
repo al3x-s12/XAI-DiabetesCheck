@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import { formatShapForChart } from '../utils/formatters';
 import { FaChartBar } from 'react-icons/fa';
-import { BiBold } from 'react-icons/bi';
 
 const ShapVisualization = ({ shapValues }) => {
   const chartData = useMemo(() => formatShapForChart(shapValues), [shapValues]);
@@ -45,12 +44,12 @@ const ShapVisualization = ({ shapValues }) => {
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
           <FaChartBar style={{ color: '#3b82f6', marginRight: '8px' }} />
           <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1f2937' }}>
-            Feature-Einfluss (SHAP)
+            Einfluss der Faktoren - SHAP (SHapley Additive exPlanations)
           </h3>
         </div>
         <p style={{ color: '#4b5563' }}>
           Diese Grafik zeigt, welche Faktoren am stärksten zu Ihrer Risikobewertung beitragen.
-          Positive Werte (rote Balken) erhöhen, negative Werte (grüne Balken) senken das Diabetes-Risiko. Je länger ein Balken, desto größer sein Einfluss.
+          Positive Werte (rote Balken) erhöhen, negative Werte (grüne Balken) senken das Diabetes-Risiko.
         </p>
       </div>
 
@@ -80,7 +79,7 @@ const ShapVisualization = ({ shapValues }) => {
             <Legend />
             <Bar
               dataKey="shapValue"
-              name="SHAP-Wert (Einfluss auf Risiko)"
+              name="SHAP-Wert"
               radius={[0, 4, 4, 0]}
             >
               {chartData.map((entry, index) => (

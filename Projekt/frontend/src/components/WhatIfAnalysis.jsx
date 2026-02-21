@@ -2,6 +2,7 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { FaLightbulb, FaUndo, FaArrowRight } from 'react-icons/fa';
 import { predictDiabetes } from '../services/api';
 import { FEATURE_META } from '../utils/constants';
+import { FEATURE_LABELS } from '../utils/formatters';
 
 const ageToClass = (age) => {
   if (age < 25) return 1;
@@ -88,12 +89,12 @@ const WhatIfAnalysis = ({ currentData, onNewPrediction, result }) => {
   const runWhatIfAnalysis = async () => {
     setIsLoading(true);
     try {
-      // Daten bereinigen (_lastResult entfernen bevor wir senden)
+      // Daten bereinigen
       const { _lastResult, ...dataToSend } = whatIfData;
       
       const response = await predictDiabetes(dataToSend);
       if (response.success) {
-        setWhatIfResult(response); // Speichere das flache Response-Objekt
+        setWhatIfResult(response);
         if (onNewPrediction) onNewPrediction(response);
       }
     } catch (error) {
@@ -111,17 +112,14 @@ const WhatIfAnalysis = ({ currentData, onNewPrediction, result }) => {
     }
   };
 
-  // Wähle 3 interessante Features zum Spielen (Hardcoded oder dynamisch)
-  const demoFeatures = ['BMI', 'PhysActivity', 'Fruits'];
-
   return (
     <div
       style={{
-        background: 'linear-gradient(to right, #eff6ff, #eef2ff)', // from-blue-50 to-indigo-50
+        background: 'linear-gradient(to right, #eff6ff, #eef2ff)',
         borderRadius: '12px',
         boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
         padding: '24px',
-        border: '1px solid #dbeafe', // blue-100
+        border: '1px solid #dbeafe',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
@@ -138,7 +136,7 @@ const WhatIfAnalysis = ({ currentData, onNewPrediction, result }) => {
           marginBottom: '24px',
         }}
       >
-        Simulieren Sie Veränderungen: Wie würde sich das Risiko ändern, wenn der Patient abnimmt oder sich mehr bewegt?
+        Simulieren Sie Veränderungen: Ändern Sie Ihre Haupt-Risikofaktoren
       </p>
 
       <div
@@ -171,7 +169,7 @@ const WhatIfAnalysis = ({ currentData, onNewPrediction, result }) => {
                     marginBottom: '4px',
                   }}
                 >
-                  Alter (Jahre)
+                  {FEATURE_LABELS[feature] || 'Alter'}
                 </label>
                 <input
                   type="range"
@@ -204,7 +202,7 @@ const WhatIfAnalysis = ({ currentData, onNewPrediction, result }) => {
             );
           }
 
-          // Spezialbehandlung für Bildungsabschluss
+          // Behandlung für Bildungsabschluss
           if (feature === 'Education') {
             const educationLabels = {
               1: 'Kein Abschluss',
@@ -236,12 +234,79 @@ const WhatIfAnalysis = ({ currentData, onNewPrediction, result }) => {
                     marginBottom: '4px',
                   }}
                 >
-                  Bildungsabschluss
+                  {FEATURE_LABELS[feature] || 'Bildungsabschluss'}
                 </label>
                 <input
                   type="range"
                   min={1}
                   max={6}
+                  step={1}
+                  value={currentValue}
+                  onChange={(e) => handleWhatIfChange(feature, e.target.value)}
+                  style={{
+                    height: '8px',
+                    backgroundColor: '#dbeafe',
+                    borderRadius: '8px',
+                    appearance: 'none',
+                    cursor: 'pointer',
+                    width: '100%',
+                  }}
+                />
+                <div
+                  style={{
+                    textAlign: 'center',
+                    fontWeight: 'bold',
+                    color: '#000000',
+                    marginTop: '5px',
+                    marginBottom: '5px',
+                  }}
+                >
+                  {displayText}
+                </div>
+              </div>
+            );
+          }
+
+          // Behandlung für Einkommen
+          if (feature === 'Income') {
+            const incomeLabels = {
+              1: 'Weniger als 10.000$',
+              2: '~10.000$',
+              3: '~15.000$',
+              4: '~20.000$',
+              5: '~25.000$',
+              6: '~35.000$',
+              7: '~50.000$',
+              8: 'Mehr als 75.000$'
+            };
+            const currentValue = whatIfData[feature] || 1;
+            const displayText = incomeLabels[currentValue] || currentValue;
+
+            return (
+              <div
+                key={feature}
+                style={{
+                  backgroundColor: '#ffffff',
+                  padding: '12px',
+                  borderRadius: '4px',
+                  boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                }}
+              >
+                <label
+                  style={{
+                    display: 'block',
+                    fontSize: '12px',
+                    fontWeight: 'bold',
+                    color: '#6b7280',
+                    marginBottom: '4px',
+                  }}
+                >
+                  {FEATURE_LABELS[feature] || 'Einkommen'}
+                </label>
+                <input
+                  type="range"
+                  min={1}
+                  max={8}
                   step={1}
                   value={currentValue}
                   onChange={(e) => handleWhatIfChange(feature, e.target.value)}
@@ -289,7 +354,7 @@ const WhatIfAnalysis = ({ currentData, onNewPrediction, result }) => {
                   marginBottom: '4px',
                 }}
               >
-                {feature}
+                {FEATURE_LABELS[feature] || feature}
               </label>
               <input
                 type="range"
