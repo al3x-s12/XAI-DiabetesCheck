@@ -335,7 +335,7 @@ const FeatureForm = ({onSubmit, isLoading, backendConnected}) => {
                 name={feature}
                 min={min}
                 max={max}
-                step={feature === 'BMI' ? 0.1 : 1}
+                step={feature === 'BMI' ? 1 : 1}
                 value={formData[feature] || 0}
                 onChange={handleChange}
                 style={{
