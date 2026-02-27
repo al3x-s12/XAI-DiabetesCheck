@@ -14,7 +14,7 @@ def create_app():
     # CORS für Frontend-Zugriff
     CORS(app, resources={
         r"/*": {
-            "origins": ["http://localhost:3000", "http://127.0.0.1:3000"],
+            "origins": ["http://localhost:3000", "http://127.0.0.1:3000", "http://frontend:3000"],
             "methods": ["GET", "POST", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization"]
         }

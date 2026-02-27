@@ -19,9 +19,15 @@ class DiabetesModell:
         try:
             # Standardpfad: Relativ zu dieser Datei
             if model_dir is None:
-                current_dir = os.path.dirname(os.path.abspath(__file__))  # backend/
-                project_root = os.path.dirname(current_dir)  # Projekt/
-                model_dir = os.path.join(project_root, "ml", "model")
+                if os.path.exists("/app/ml/model"):
+                    model_dir = "/app/ml/model"
+                else:
+                    # 2. Versuch: Lokaler Pfad (Fallback)
+                    current_dir = os.path.dirname(os.path.abspath(__file__))
+                    project_root = os.path.dirname(current_dir)
+                    model_dir = os.path.join(project_root, "ml", "model")
+
+            print(f"Suche Modelle im Verzeichnis: {model_dir}")
             
             # Pfade definieren
             pipeline_path = os.path.join(model_dir, "final_model_pipeline.joblib")
@@ -208,5 +214,12 @@ class DiabetesModell:
 # Singleton Instanz
 try:
     diabetes_model = DiabetesModell()
-except Exception:
+    print("MODELL ERFOLGREICH GELADEN!")
+except Exception as e:
+    print("="*50)
+    print(f"KRITISCHER FEHLER BEIM MODELL-LADEN:")
+    print(f"Fehlerdetails: {e}")
+    import traceback
+    traceback.print_exc()
+    print("="*50)
     diabetes_model = None

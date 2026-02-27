@@ -46,7 +46,7 @@ def format_shap_for_frontend(shap_values: Dict) -> Dict:
         })
 
     # Sortieren nach absoluten Wert
-    features.sort(kex=lambda x: x['abs_value'], reverse=True)
+    features.sort(key=lambda x: x['abs_value'], reverse=True)
 
     # Top 5 für positive und negative
     top_increasing = [f for f in features if f['impact'] == 'positive'][:5]

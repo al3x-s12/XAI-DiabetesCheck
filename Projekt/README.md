@@ -1,3 +1,21 @@
+# Docker
+
+## Voraussetzungen
+* [Docker Desktop](https://www.docker.com/products/docker-desktop/) installiert und gestartet.
+
+## Installation und Start
+Um das gesamte Projekt (Frontend & Backend) zu starten, führen Sie im Hauptverzeichnis folgenden Befehl aus:
+
+```bash
+docker-compose up --build
+```
+
+Sobald die Container laufen, ist die Anwendung erreichbar unter:
+* Frontend: http://localhost:3000
+* Backend API: http://localhost:5000
+* API Health-Check: http://localhost:5000/health
+
+
 # Phase 1 (Projektplanung)
 ## Datenquelle
 * Datensatz: "Diabetes Health Indicators Dataset" (BRFSS2015)  
@@ -111,8 +129,3 @@ projekt/
 * Entscheidungen begründen
 * Testergebnisse zusammenfassen
 * Reflexion: Was lief gut, was nicht?
-
-## Fragen
-* Jede API genau in der Doku beschreiben?
-* Wie genau muss der Explainable Teil erklären?
-* Anforderungen? (Grafiken für Benutzer)
