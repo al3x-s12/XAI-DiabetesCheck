@@ -107,7 +107,7 @@ class DiabetesModell:
 
     def predict_diabetes_risk(self, input_features: Dict[str, float]) -> Dict[str, Any]:
         """
-        Hauptvorhersage-Funktion (ersetzt die Notebook-Funktion)
+        Hauptvorhersage-Funktion
         """
         try:
             # Features vorbereiten
@@ -216,10 +216,5 @@ try:
     diabetes_model = DiabetesModell()
     print("MODELL ERFOLGREICH GELADEN!")
 except Exception as e:
-    print("="*50)
-    print(f"KRITISCHER FEHLER BEIM MODELL-LADEN:")
     print(f"Fehlerdetails: {e}")
-    import traceback
-    traceback.print_exc()
-    print("="*50)
     diabetes_model = None

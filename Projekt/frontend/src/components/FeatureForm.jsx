@@ -100,7 +100,7 @@ const FeatureForm = ({onSubmit, isLoading, backendConnected}) => {
         try {
             const response = await getFeatures();
             if (response.success) {
-                // Backend liefert jetzt 'feature_info' dictionary mit min/max/median
+                // Backend liefert 'feature_info' dictionary mit min/max/median
                 const backendInfo = response.data.feature_info || {};
                 const backendFeatures = response.data.features || [];
                 
@@ -117,7 +117,7 @@ const FeatureForm = ({onSubmit, isLoading, backendConnected}) => {
                             max: backendInfo[feature].max,
                         }
                     } else if (FEATURE_META[feature]) {
-                        // Feature existiert in unseren Meta-Daten → Fallback verwenden
+                        // Feature existiert in Meta-Daten → Fallback verwenden
                         combinedInfo[feature] = {
                         min: FEATURE_META[feature].min,
                         max: FEATURE_META[feature].max,
@@ -382,12 +382,10 @@ const FeatureForm = ({onSubmit, isLoading, backendConnected}) => {
           overflowY: 'auto',
           paddingRight: '8px',
           textAlign: 'left',
-          // custom scrollbar (nicht Tailwind, deshalb hier manuell definiert)
+          // custom scrollbar
           scrollbarWidth: 'thin',
           scrollbarColor: '#cbd5e1 #f1f5f9',
         }}
-        // Für Webkit-Browser (Chrome, Safari) zusätzlich via style? Geht nicht direkt, aber man kann ein globales CSS verwenden oder akzeptieren.
-        // Wir lassen es erstmal so; der Benutzer kann bei Bedarf eine globale CSS-Datei anpassen.
       >
         {features.map(feature => (
           <div

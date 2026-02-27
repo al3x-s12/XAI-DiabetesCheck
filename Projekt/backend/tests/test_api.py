@@ -3,7 +3,6 @@ import sys
 import os
 import json
 
-# Dem Systempfad das backend-Verzeichnis hinzufügen
 current_dir = os.path.dirname(os.path.abspath(__file__))
 backend_dir = os.path.dirname(current_dir)
 sys.path.insert(0, backend_dir)
@@ -76,7 +75,7 @@ def test_predict_endpoint_partial_data(client):
     partial_data = {
         'BMI': 40.0,
         'Age': 10
-        # Rest fehlt -> wird Median
+        # Rest fehlt = Median
     }
 
     response = client.post('/api/predict',
@@ -86,7 +85,6 @@ def test_predict_endpoint_partial_data(client):
     assert response.status_code == 200
     data = json.loads(response.data)
     assert data['success'] == True
-    # BMI 40 ist hoch, Risiko sollte also berechnet werden
     assert data['risk_percent'] > 0
 
 def test_predict_endpoint_invalid_values(client):
@@ -118,7 +116,6 @@ def test_predict_endpoint_missing_data(client):
                            json={'HighBP': 1},
                            content_type='application/json')
     
-    # Sollte funktionieren, trotz fehlender Daten
     assert response.status_code == 200
     data = json.loads(response.data)
     assert data['success'] == True

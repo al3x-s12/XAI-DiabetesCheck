@@ -5,18 +5,14 @@ from typing import Dict, Any
 def log_prediction(input_data: Dict, result: Dict) -> None:
     """
     Loggt eine Vorhersage (ohne personenbezogene Daten)
-    
-    Wichtig: DSGVO-konform, keine personenbezogenen Daten speichern!
     """
     log_entry = {
         'timestamp': datetime.now().isoformat(),
         'risk_percent': result.get('risk_percent'),
         'risk_category': result.get('risk_category'),
         'feature_count': len(input_data),
-        # Keine Feature-Werte speichern!
     }
 
-    # In Praxis: In Log-Datei oder Monitoring-System schreiben
     print(f"[PREDICTION LOG] {json.dumps(log_entry)}")
 
 def format_shap_for_frontend(shap_values: Dict) -> Dict:

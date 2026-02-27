@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from werkzeug.exceptions import BadRequest
 from ml_model import diabetes_model
 
-# Blueprint erstellen - DIESE ZEILE MUSS ZUERST KOMMEN!
+# Blueprint erstellen
 api_bp = Blueprint('api', __name__)
 
 

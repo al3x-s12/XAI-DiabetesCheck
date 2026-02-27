@@ -28,7 +28,7 @@ export const predictDiabetes = async (featureData) => {
   } catch (error) {
     console.error('Error predicting diabetes:', error);
     
-    // Bessere Fehlermeldungen
+    // Fehlermeldungen
     if (error.response) {
       throw new Error(`API Error: ${error.response.data.error || 'Unknown error'}`);
     } else if (error.request) {

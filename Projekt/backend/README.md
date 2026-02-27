@@ -2,7 +2,7 @@
 
 Backend für die XAI-DiabetesCheck Web-App.
 
-## 🚀 Schnellstart
+## Schnellstart
 
 1. **Umgebung einrichten:**
 ```bash

@@ -1,3 +1,6 @@
+# Git-Repository
+https://github.com/al3x-s12/XAI-DiabetesCheck
+
 # Docker
 
 ## Voraussetzungen
@@ -43,7 +46,6 @@ Quelle: http://kaggle.com/datasets/alexteboul/diabetes-health-indicators-dataset
 * Backend (Flask Webframework) 
 * ML-Modell: Scikit-learn (z. B. Random Forest, XGBoost) 
 * Explainable: SHAP (Shapley-Wert) für Erklärungen/Auswertungen
-* Kommunikation: FAST-API zwischen Frontend und Backend
 
 ## Projektstruktur
 ```
@@ -91,7 +93,7 @@ projekt/
 
 # Phase 3 (Backend-Entwicklung)
 ## API bauen
-* Kommunikation zwischen Fronted und Backend (FAST-API)
+* Kommunikation zwischen Fronted und Backend
 
 ## Testen
 * Sicherstellen, dass Daten korrekt verarbeitet werden
