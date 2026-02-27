@@ -9,5 +9,4 @@ COPY . .
 
 EXPOSE 3000
 
-# Vite braucht --host, um Anfragen von außerhalb des Containers anzunehmen
 CMD ["npm", "run", "dev", "--", "--host"]
